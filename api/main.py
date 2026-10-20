@@ -1,10 +1,10 @@
 import logging
 from pathlib import Path
-from prometheus_fastapi_instrumentator import Instrumentator
 
 import joblib
 import pandas as pd
 from fastapi import FastAPI, HTTPException
+from prometheus_fastapi_instrumentator import Instrumentator
 from pydantic import BaseModel
 
 # ============================================================
