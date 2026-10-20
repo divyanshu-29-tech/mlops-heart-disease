@@ -2,7 +2,6 @@ from pathlib import Path
 
 import joblib
 import pandas as pd
-
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import (
@@ -22,7 +21,6 @@ from preprocessing import (
     create_preprocessor,
     prepare_features_and_target,
 )
-
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
@@ -272,7 +270,7 @@ def main():
 
     joblib.dump(final_model, model_path)
 
-    print(f"\nFinal model saved to:")
+    print("\nFinal model saved to:")
     print(model_path)
 
 

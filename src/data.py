@@ -3,7 +3,6 @@ from pathlib import Path
 import pandas as pd
 from ucimlrepo import fetch_ucirepo
 
-
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 RAW_DATA_DIR = PROJECT_ROOT / "data" / "raw"
 RAW_DATA_DIR.mkdir(parents=True, exist_ok=True)

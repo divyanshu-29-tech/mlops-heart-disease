@@ -1,29 +1,27 @@
 from pathlib import Path
 
 import joblib
+import matplotlib.pyplot as plt
 import mlflow
 import mlflow.sklearn
 import pandas as pd
-import matplotlib.pyplot as plt
-
+from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import (
+    ConfusionMatrixDisplay,
+    RocCurveDisplay,
     accuracy_score,
     confusion_matrix,
-    ConfusionMatrixDisplay,
     precision_score,
     recall_score,
     roc_auc_score,
-    RocCurveDisplay,
 )
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
-from sklearn.linear_model import LogisticRegression
 
 from preprocessing import (
     create_preprocessor,
     prepare_features_and_target,
 )
-
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 

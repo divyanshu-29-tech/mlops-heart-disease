@@ -1,11 +1,11 @@
 import pandas as pd
+from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import Pipeline
 
 from src.preprocessing import (
     create_preprocessor,
     prepare_features_and_target,
 )
-from sklearn.linear_model import LogisticRegression
-from sklearn.pipeline import Pipeline
 
 
 def test_model_can_train_and_predict():
