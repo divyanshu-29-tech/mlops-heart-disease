@@ -25,6 +25,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install ruff pytest
 
       - name: Run Ruff
         run: |
@@ -34,7 +35,7 @@ jobs:
         run: |
           python -m pytest -q
 
-   docker:
+  docker:
     runs-on: ubuntu-latest
     needs: test
 
@@ -42,38 +43,44 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Build Docker image
         run: |
-          docker build -t mlops-heart-disease:ci .
+          docker build -t mlops-heart-disease:latest .
 
-      - name: Run Docker container
+      - name: Start Docker container
         run: |
           docker run -d \
-            --name mlops-heart-disease-api \
+            --name mlops-heart-disease \
             -p 8000:8000 \
-            mlops-heart-disease:ci
+            mlops-heart-disease:latest
 
       - name: Wait for API
         run: |
           for i in {1..30}; do
-            if curl -fsS http://127.0.0.1:8000/health; then
-              echo "API is ready"
+            if curl --fail http://127.0.0.1:8000/health; then
+              echo "API is healthy"
               exit 0
             fi
+            echo "Waiting for API..."
             sleep 2
           done
 
-          echo "API failed to start"
-          docker logs mlops-heart-disease-api
+          echo "API failed to become healthy"
+          docker logs mlops-heart-disease
           exit 1
 
       - name: Test health endpoint
         run: |
-          curl -fsS http://127.0.0.1:8000/health
+          curl --fail http://127.0.0.1:8000/health
 
       - name: Test prediction endpoint
         run: |
-          curl -fsS -X POST http://127.0.0.1:8000/predict \
+          curl --fail \
+            -X POST \
+            http://127.0.0.1:8000/predict \
             -H "Content-Type: application/json" \
             -d '{
               "age": 63,
@@ -91,7 +98,13 @@ jobs:
               "thal": 1
             }'
 
-      - name: Show container logs
+      - name: Show Docker logs on failure
+        if: failure()
+        run: |
+          docker logs mlops-heart-disease
+
+      - name: Stop Docker container
         if: always()
         run: |
-          docker logs mlops-heart-disease-api
+          docker stop mlops-heart-disease || true
+          docker rm mlops-heart-disease || true
