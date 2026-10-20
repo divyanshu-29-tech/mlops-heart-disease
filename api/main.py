@@ -1,5 +1,6 @@
 import logging
 from pathlib import Path
+from prometheus_fastapi_instrumentator import Instrumentator
 
 import joblib
 import pandas as pd
@@ -63,6 +64,7 @@ app = FastAPI(
     description="MLOps API for heart disease prediction",
     version="1.0.0",
 )
+Instrumentator().instrument(app).expose(app)
 
 
 # ============================================================
