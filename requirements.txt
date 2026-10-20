@@ -4,3 +4,9 @@ pandas
 numpy
 scikit-learn==1.6.1
 joblib
+mlflow
+matplotlib
+seaborn
+pytest
+ruff
+ucimlrepo
