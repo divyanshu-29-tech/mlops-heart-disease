@@ -1,0 +1,20 @@
+iapiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: mlops-heart-disease
+  namespace: monitoring
+  labels:
+    release: monitoring
+spec:
+  namespaceSelector:
+    matchNames:
+      - default
+
+  selector:
+    matchLabels:
+      app: mlops-heart-disease
+
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 15s
