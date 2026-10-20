@@ -34,7 +34,7 @@ jobs:
         run: |
           python -m pytest -q
 
-    docker:
+   docker:
     runs-on: ubuntu-latest
     needs: test
 
