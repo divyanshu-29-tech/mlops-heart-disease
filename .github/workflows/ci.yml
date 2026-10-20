@@ -34,7 +34,7 @@ jobs:
         run: |
           python -m pytest -q
 
-  docker:
+    docker:
     runs-on: ubuntu-latest
     needs: test
 
@@ -45,3 +45,53 @@ jobs:
       - name: Build Docker image
         run: |
           docker build -t mlops-heart-disease:ci .
+
+      - name: Run Docker container
+        run: |
+          docker run -d \
+            --name mlops-heart-disease-api \
+            -p 8000:8000 \
+            mlops-heart-disease:ci
+
+      - name: Wait for API
+        run: |
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:8000/health; then
+              echo "API is ready"
+              exit 0
+            fi
+            sleep 2
+          done
+
+          echo "API failed to start"
+          docker logs mlops-heart-disease-api
+          exit 1
+
+      - name: Test health endpoint
+        run: |
+          curl -fsS http://127.0.0.1:8000/health
+
+      - name: Test prediction endpoint
+        run: |
+          curl -fsS -X POST http://127.0.0.1:8000/predict \
+            -H "Content-Type: application/json" \
+            -d '{
+              "age": 63,
+              "trestbps": 145,
+              "chol": 233,
+              "thalach": 150,
+              "oldpeak": 2.3,
+              "sex": 1,
+              "cp": 1,
+              "fbs": 1,
+              "restecg": 0,
+              "exang": 0,
+              "slope": 0,
+              "ca": 0,
+              "thal": 1
+            }'
+
+      - name: Show container logs
+        if: always()
+        run: |
+          docker logs mlops-heart-disease-api
