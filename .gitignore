@@ -19,6 +19,9 @@ mlartifacts/
 models/*.joblib
 models/*.pkl
 
+# Production model used by the API
+!models/logistic_regression.joblib
+
 # Generated data
 data/processed/
 
